@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              💣 Explosive Ordnance Disposal Virtual Ordnance Identification (EODVOID)
             
           </span>
         </div>
@@ -244,7 +244,7 @@
   <span class="md-ellipsis">
     
   
-    Home
+    💣 Explosive Ordnance Disposal Virtual Ordnance Identification (EODVOID)
   
 
     
@@ -262,7 +262,7 @@
   <span class="md-ellipsis">
     
   
-    Home
+    💣 Explosive Ordnance Disposal Virtual Ordnance Identification (EODVOID)
   
 
     
@@ -292,6 +292,17 @@
     <span class="md-ellipsis">
       
         Title and Description
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Overview
       
     </span>
   </a>
@@ -454,6 +465,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#problem" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -583,6 +605,8 @@
 <h1 id="explosive-ordnance-disposal-virtual-ordnance-identification-eodvoid">💣 Explosive Ordnance Disposal Virtual Ordnance Identification (EODVOID)</h1>
 <h2 id="title-and-description">Title and Description</h2>
 <p>EODVOID is a research and prototype system that uses computer vision to assist Explosive Ordnance Disposal (EOD) technicians by identifying suspected ordnance from still RGB images. The system is designed as a containerized inference service that returns a predicted ordnance class/type along with a confidence score, supporting reproducibility and future integration.</p>
+<h2 id="architecture-overview">Architecture Overview</h2>
+<p><img alt="EODVOID Cloud Architecture" src="docs/diagrams/EODVOID_architecture_diagram.png" /></p>
 <hr />
 <h2 id="problem">Problem</h2>
 <p>EOD technicians must often identify explosive hazards in high-risk environments using manual visual inspection and reference materials. This work can require close proximity to potentially hazardous items and is complicated by the large number of global ordnance variants and real-world image degradation (for example corrosion, partial burial, and poor lighting).</p>
@@ -669,6 +693,38 @@ myroslaw.e.hohil.civ@army.mil</p>
 <p><strong>Operational context:</strong><br />
 Still images captured by Soldiers, robotic operators, or UAV operators under variable lighting, distance, and environmental conditions.</p>
 <hr />
+<h1 id="quick-start-recommended">🚀 Quick Start (Recommended)</h1>
+<p>For most users, the fastest way to run EODVOID locally is with Docker Compose. All commands are run from repository root.</p>
+<h2 id="1-clone-the-repository">1. Clone the repository</h2>
+<pre><code class="language-bash">git clone https://github.com/EODVOID-AITech-Capstone/EODVOID.git
+cd EODVOID
+</code></pre>
+<h2 id="2-create-your-local-environment-file">2. Create your local environment file</h2>
+<pre><code class="language-bash">cp .env.example .env
+</code></pre>
+<h2 id="3-configure-the-model-path">3. Configure the model path</h2>
+<p>Place your trained YOLO checkpoint under:</p>
+<pre><code class="language-text">ml/models/checkpoints/
+</code></pre>
+<p>Then update <code>EODVOID_MODEL_PATH</code> in <code>.env</code> so it matches the container path, for example:</p>
+<pre><code class="language-env">EODVOID_MODEL_PATH=/app/ml/models/checkpoints/best.pt
+</code></pre>
+<h2 id="4-start-the-application">4. Start the application</h2>
+<pre><code class="language-bash">docker compose up --build
+</code></pre>
+<p>Once startup completes, the services will be available at:</p>
+<ul>
+<li>Web UI: <code>http://localhost:9002</code></li>
+<li>API: <code>http://localhost:8000</code></li>
+<li>Inference: <code>http://localhost:8001</code></li>
+</ul>
+<h2 id="5-stop-the-application">5. Stop the application</h2>
+<pre><code class="language-bash">docker compose down
+</code></pre>
+<blockquote>
+<p>Note: The application can start without a model file, but inference requests will fail until the configured checkpoint exists.</p>
+</blockquote>
+<hr />
 <h1 id="installation-instructions">⚙️ Installation Instructions</h1>
 <p>These instructions describe how to clone the repository and prepare the system for local development, containerization, and Kubernetes deployment. They are intended for developers and contributors.</p>
 <h2 id="repository-layout">Repository Layout</h2>
@@ -681,7 +737,7 @@ Still images captured by Soldiers, robotic operators, or UAV operators under var
 </ul>
 <h2 id="1-clone-repository">1. Clone repository</h2>
 <pre><code class="language-bash">git clone https://github.com/EODVOID-AITech-Capstone/EODVOID.git
-cd eodvoid
+cd EODVOID
 </code></pre>
 <hr />
 <h2 id="2-system-requirements">2. System Requirements</h2>
@@ -821,8 +877,8 @@ python -m pip install --upgrade pip
 pip install -r apps/api/requirements.txt
 
 # Inference service dependencies
+pip install -r apps/inference/requirements-inference-cpu.txt
 pip install -r apps/inference/requirements.txt
-pip install -r apps/inference/requirements-torch.txt
 
 </code></pre>
 <p>Windows:</p>
@@ -830,8 +886,11 @@ pip install -r apps/inference/requirements-torch.txt
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 pip install -r apps/api/requirements.txt
+pip install -r apps/inference/requirements-inference-cpu.txt
 pip install -r apps/inference/requirements.txt
-pip install -r apps/inference/requirements-torch.txt
+</code></pre>
+<p>For GPU-based training environments, install:</p>
+<pre><code class="language-bash">pip install -r apps/inference/requirements-training-gpu.txt
 </code></pre>
 <hr />
 <h2 id="5-configure-environment-variables">5. Configure environment variables</h2>
@@ -878,7 +937,7 @@ uvicorn api.main:create_application --factory --host &quot;${EODVOID_API_HOST:-0
 npm install
 npm run dev
 </code></pre>
-<h2 id="6-build-docker-images-recommended-start-point">6. Build Docker images (Recommended Start Point)</h2>
+<h2 id="6-build-docker-images">6. Build Docker images</h2>
 <p>Expected workflow from the repository root:</p>
 <pre><code class="language-bash"># This commands builds API, Inference, and Web Services
 docker compose up --build
@@ -891,15 +950,85 @@ docker compose down
 </code></pre>
 <p>Note: When deploying to a remote Kubernetes cluster (e.g., AKS), container images must be pushed to a container registry accessible by the cluster (such as Azure Container Registry) before applying the Kubernetes manifests.</p>
 <hr />
-<h2 id="7-deploy-to-kubernetes">7. Deploy to Kubernetes</h2>
-<p>Apply the Kubernetes manifests:</p>
-<pre><code class="language-bash">kubectl apply -f deploy/k8s/
-
-# Verify resources
-kubectl get pods
-kubectl get svc
+<h2 id="7-cloud-deployment-aks">7. Cloud Deployment (AKS)</h2>
+<p>The current cloud deployment path uses:</p>
+<ul>
+<li>Azure Resource Group</li>
+<li>Azure Container Registry (ACR)</li>
+<li>Azure Kubernetes Service (AKS)</li>
+<li>NGINX ingress controller</li>
+<li>cert-manager + Let’s Encrypt for TLS</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Terraform</li>
+<li>Azure CLI</li>
+<li>kubectl</li>
+<li>Docker</li>
+<li>a real DNS record pointed at the ingress public IP</li>
+</ul>
+<h3 id="1-provision-azure-infrastructure">1. Provision Azure infrastructure</h3>
+<pre><code class="language-bash">cd deploy/terraform
+cp terraform.tfvars.example terraform.tfvars
 </code></pre>
-<p>Both the inference API and the web UI should be running inside the cluster.</p>
+<p>Update <code>terraform.tfvars</code> with your real Azure values, then run:</p>
+<pre><code class="language-bash">terraform init
+terraform plan
+terraform apply
+</code></pre>
+<h3 id="2-connect-kubectl-to-the-cluster">2. Connect kubectl to the cluster</h3>
+<pre><code class="language-bash">az aks get-credentials --resource-group &lt;resource-group&gt; --name &lt;cluster-name&gt;
+</code></pre>
+<h3 id="3-build-and-push-container-images">3. Build and push container images</h3>
+<p>Log in to ACR:</p>
+<pre><code class="language-bash">az acr login --name &lt;acr-name&gt;
+</code></pre>
+<p>Build and push the images:</p>
+<pre><code class="language-bash">docker build -f deploy/docker/Dockerfile.web -t &lt;acr-login-server&gt;/eodvoid-web:latest .
+docker build -f deploy/docker/Dockerfile.inference -t &lt;acr-login-server&gt;/eodvoid-inference:latest .
+
+docker push &lt;acr-login-server&gt;/eodvoid-web:latest
+docker push &lt;acr-login-server&gt;/eodvoid-inference:latest
+</code></pre>
+<h3 id="4-update-kubernetes-manifests">4. Update Kubernetes manifests</h3>
+<p>Before applying workloads:</p>
+<ul>
+<li>replace placeholder image references in:</li>
+<li><code>deploy/k8s/frontend.yaml</code></li>
+<li><code>deploy/k8s/inference.yaml</code></li>
+<li>replace <code>your-email@example.com</code> in <code>deploy/k8s/cluster-issuer.yaml</code></li>
+<li>confirm the configured model path in <code>deploy/k8s/inference.yaml</code></li>
+<li>ensure the model file exists in the mounted volume at the same path</li>
+</ul>
+<p>Model storage note:</p>
+<ul>
+<li>the inference deployment mounts <code>eodvoid-model-pvc</code> at <code>/app/ml/models/checkpoints</code></li>
+<li>that PVC is intended to be backed by Azure Files via the <code>azurefile-csi</code> storage class</li>
+<li>the model checkpoint must be uploaded into that backing file share so the pod can see it at the exact <code>EODVOID_MODEL_PATH</code> configured in <code>deploy/k8s/inference.yaml</code></li>
+<li>a bound PVC alone is not enough; the checkpoint file itself must be present in the share</li>
+</ul>
+<h3 id="5-install-cert-manager">5. Install cert-manager</h3>
+<pre><code class="language-bash">kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
+</code></pre>
+<p>Wait for cert-manager pods to become ready before continuing.</p>
+<h3 id="6-apply-the-kubernetes-manifests">6. Apply the Kubernetes manifests</h3>
+<pre><code class="language-bash">kubectl apply -f deploy/k8s/namespace.yaml
+kubectl apply -f deploy/k8s/inference.yaml
+kubectl apply -f deploy/k8s/inference-hpa.yaml
+kubectl apply -f deploy/k8s/frontend.yaml
+kubectl apply -f deploy/k8s/cluster-issuer.yaml
+kubectl apply -f deploy/k8s/ingress.yaml
+</code></pre>
+<h3 id="7-verify-the-deployment">7. Verify the deployment</h3>
+<pre><code class="language-bash">kubectl get pods -n eodvoid
+kubectl get svc -n eodvoid
+kubectl get ingress -n eodvoid
+kubectl get hpa -n eodvoid
+kubectl get certificate -n eodvoid
+</code></pre>
+<p>If DNS and TLS are configured correctly, the application should be reachable at your ingress hostname, for example:</p>
+<pre><code class="language-text">https://eodvoid.app
+</code></pre>
 <hr />
 <h1 id="testing-instructions">🧪 Testing Instructions</h1>
 <h2 id="model-evaluation-testing-ml-level">Model Evaluation Testing (ML-Level)</h2>
@@ -927,20 +1056,19 @@ yolo detect val data=ml/data/datasets/synth_clean/data.yaml model=runs/detect/tr
 </code></pre>
 <hr />
 <h2 id="software-testing-code-level">Software Testing (Code-Level)</h2>
-<p>Running unit tests (if/when added)</p>
-<p>If the repository includes automated tests (e.g., pytest), run:</p>
-<pre><code class="language-bash">pytest -q
-</code></pre>
-<p>Integration checks:</p>
+<p>Automated checks currently include:</p>
 <ul>
-<li>API starts</li>
-<li>Model loads</li>
-<li>Sample request returns valid JSON</li>
-<li>Schema valid, outputs match</li>
-<li>Bad input handled gracefully</li>
+<li>backend linting with <code>ruff</code></li>
+<li>backend format checking with <code>black --check</code></li>
+<li>backend syntax checks with <code>python -m compileall</code></li>
+<li>backend tests with <code>pytest -q tests</code></li>
+<li>frontend production build</li>
+<li>Docker image build checks for API, inference, and web</li>
 </ul>
-<p>Integration tests can be run via pytest or manually verified using commands.</p>
-<p>Example:</p>
+<p>Run the backend test suite locally:</p>
+<pre><code class="language-bash">pytest -q tests
+</code></pre>
+<p>Manual API smoke checks:</p>
 <pre><code class="language-bash"># Health check
 curl http://localhost:8000/health
 
@@ -949,28 +1077,51 @@ curl -X POST &quot;http://localhost:8000/detect&quot; \
   -H &quot;Content-Type: multipart/form-data&quot; \
   -F &quot;file=@path/to/example.jpg&quot;
 </code></pre>
+<h3 id="load-testing-with-locust">Load Testing With Locust</h3>
+<p>Install Locust in your active Python environment:</p>
+<pre><code class="language-bash">pip install locust
+</code></pre>
+<p>The repository includes a simple Locust test at <code>tests/locust/locustfile.py</code>. It expects a test image named <code>sample.jpg</code> in the same directory.</p>
+<p>Run it like this:</p>
+<pre><code class="language-bash">cd tests/locust
+locust -f locustfile.py -H https://eodvoid.app
+</code></pre>
+<p>Then open the Locust UI at:</p>
+<pre><code class="language-text">http://localhost:8089
+</code></pre>
+<p>Recommended starting point:</p>
+<ul>
+<li>Users: <code>5</code></li>
+<li>Spawn rate: <code>1</code></li>
+</ul>
+<p>As you increase load, monitor the cluster with:</p>
+<pre><code class="language-bash">kubectl get pods -n eodvoid
+kubectl top pods -n eodvoid
+kubectl logs -n eodvoid deploy/eodvoid-inference --tail=100
+</code></pre>
 <hr />
 <h1 id="usage-example">🚀 Usage Example</h1>
 <p>These instructions describe how to use the system after it has been installed and deployed. Once the inference API is implemented, you will be able to submit an image and receive a structured JSON response.</p>
 <p>Note: The Web UI is optional and intended for demonstration and non-technical users. All inference logic resides in the backend service. This deployment model allows integration with existing laptops or tablets using a standard web browser.</p>
-<h2 id="option-a-access-via-kubernetes-port-forwarding-local-demo">Option A — Access via Kubernetes port-forwarding (local demo)</h2>
-<p>1) Expose inference API:</p>
-<pre><code class="language-bash">kubectl port-forward svc/eodvoid-inference 8000:8000
+<h2 id="option-a-access-via-ingress-recommended-cloud-usage">Option A — Access via ingress (recommended cloud usage)</h2>
+<p>After DNS, ingress, and TLS are configured, open the application in a browser at your ingress hostname, for example:</p>
+<pre><code class="language-text">https://eodvoid.app
 </code></pre>
-<p>Open API docs:</p>
-<pre><code>http://localhost:8000/docs
-</code></pre>
-<p>2) Expose web UI:</p>
-<pre><code class="language-bash">kubectl port-forward svc/eodvoid-webui 9002:80
-</code></pre>
-<p>Open in browser:</p>
-<pre><code>http://localhost:9002
-</code></pre>
-<p>The Web UI communicates with the inference API via HTTP and does not perform local inference.</p>
+<p>The web UI is served at <code>/</code>, and the frontend sends inference requests to <code>/detect</code> through the ingress.</p>
 <hr />
-<h2 id="option-b-direct-api-usage-without-web-ui">Option B — Direct API usage (without Web UI)</h2>
+<h2 id="option-b-access-via-kubernetes-port-forwarding-local-cluster-debugging">Option B — Access via Kubernetes port-forwarding (local cluster debugging)</h2>
+<p>Expose inference directly:</p>
+<pre><code class="language-bash">kubectl port-forward -n eodvoid svc/eodvoid-inference 8001:8001
+</code></pre>
+<p>Expose the frontend directly:</p>
+<pre><code class="language-bash">kubectl port-forward -n eodvoid svc/eodvoid-frontend 9002:80
+</code></pre>
+<p>Then open:</p>
+<pre><code class="language-text">http://localhost:9002
+</code></pre>
+<h2 id="option-c-direct-api-usage-without-web-ui">Option C — Direct API usage (without Web UI)</h2>
 <p>Send an image to the inference service:</p>
-<pre><code class="language-bash">curl -X POST &quot;http://localhost:8000/detect&quot; \
+<pre><code class="language-bash">curl -X POST &quot;https://eodvoid.app/detect&quot; \
   -H &quot;Content-Type: multipart/form-data&quot; \
   -F &quot;file=@path/to/example.jpg&quot;
 </code></pre>
@@ -989,8 +1140,31 @@ curl -X POST &quot;http://localhost:8000/detect&quot; \
 }
 </code></pre>
 <hr />
+<h2 id="dod-constrained-environment-considerations">DoD-Constrained Environment Considerations</h2>
+<p>The local development workflow has been validated using Docker Compose in a standard development environment. Running the system in a DoD-managed or otherwise restricted environment may require additional approvals or configuration.</p>
+<p>Potential constraints include:</p>
+<ul>
+<li>Approval to run Docker or another container runtime</li>
+<li>Approval to bind local service ports used by the web, API, and inference services</li>
+<li>Access to GitHub or an internal mirrored repository</li>
+<li>Access to Azure Blob Storage for downloading datasets, checkpoints, and model results</li>
+<li>Access to public package registries such as PyPI and npm, or use of internal mirrors</li>
+<li>Enterprise TLS/certificate configuration for Git, Python, Node, Docker, and AzCopy</li>
+<li>Antivirus/EDR review of local services, scripts, and model checkpoint files</li>
+<li>Data handling restrictions for imagery, annotations, and model artifacts</li>
+</ul>
+<p>If public internet access is restricted, future maintainers may need to use:</p>
+<ul>
+<li>an internal Git repository mirror</li>
+<li>prebuilt/scanned container images</li>
+<li>offline Python wheel and npm dependency bundles</li>
+<li>an approved artifact transfer mechanism</li>
+<li>internally hosted model checkpoints and datasets</li>
+</ul>
+<hr />
 <h1 id="license">📜 License</h1>
 <p>This project is developed for academic and research purposes. Licensing details will be added before public release.</p>
+<hr />
 
 
 
